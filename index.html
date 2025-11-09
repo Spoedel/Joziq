@@ -24,6 +24,7 @@
             min-height: 100vh;
             flex-direction: column;
             backdrop-filter: brightness(60%);
+            overflow: hidden; /* prevent scroll from snow */
         }
 
         /* Discord Icon */
@@ -41,6 +42,7 @@
             padding: 10px 15px;
             border-radius: 8px;
             transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            z-index: 10;
         }
 
         .discord-link:hover {
@@ -61,6 +63,8 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
             max-width: 400px;
             width: 90%;
+            position: relative;
+            z-index: 5;
         }
 
         h1 {
@@ -81,6 +85,26 @@
             margin-top: 20px;
             font-size: 0.9em;
             color: #ddd;
+            position: relative;
+            z-index: 5;
+        }
+
+        /* Snowflakes */
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            color: #fff;
+            font-size: 1em;
+            z-index: 2;
+            user-select: none;
+            pointer-events: none;
+            animation-name: fall;
+            animation-timing-function: linear;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(0) translateX(0); opacity: 1; }
+            100% { transform: translateY(100vh) translateX(50px); opacity: 0.7; }
         }
     </style>
 </head>
@@ -96,9 +120,7 @@
         <h1>Christmas Countdown</h1>
         <div id="countdown">Loading...</div>
     </div>
-    <div class="footer">
-        Made by Bas!
-    </div>
+    <div class="footer">Made by Bas!</div>
 
     <script>
         // Countdown Function (local timezone)
@@ -140,6 +162,24 @@
                 window.history.replaceState(null, '', cleanUrl);
             }
         })();
+
+        // Snowflake Generator
+        const snowChars = ['❄','✻','❅','✼'];
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.classList.add('snowflake');
+            snowflake.style.left = Math.random() * window.innerWidth + 'px';
+            snowflake.style.fontSize = (Math.random() * 24 + 10) + 'px';
+            snowflake.style.opacity = Math.random();
+            snowflake.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            snowflake.textContent = snowChars[Math.floor(Math.random() * snowChars.length)];
+            document.body.appendChild(snowflake);
+
+            // Remove after falling
+            setTimeout(() => snowflake.remove(), parseFloat(snowflake.style.animationDuration) * 1000);
+        }
+
+        setInterval(createSnowflake, 200);
     </script>
 </body>
 </html>
