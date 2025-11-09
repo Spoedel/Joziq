@@ -16,7 +16,7 @@
             font-family: 'Arial', sans-serif;
             text-align: center;
             color: #ffffff;
-            background: url('https://www.kapwing.com/resources/content/images/2020/12/desktop-background.gif') no-repeat center center fixed;
+            background: url('background.gif') no-repeat center center fixed; /* Local file */
             background-size: cover;
             display: flex;
             justify-content: center;
@@ -40,12 +40,13 @@
             background-color: rgba(0, 0, 0, 0.732);
             padding: 10px 15px;
             border-radius: 8px;
-            transition: background 0.3s ease, transform 0.2s ease;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .discord-link:hover {
             background-color: rgba(114, 137, 218, 0.9); /* Discord blue */
             transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(114, 137, 218, 0.5);
         }
 
         .discord-link img {
@@ -85,7 +86,7 @@
 </head>
 <body>
     <!-- Discord Link -->
-    <a class="discord-link" href="https://discord.gg/christmas" target="_blank">
+    <a class="discord-link" href="https://discord.gg/christmas" target="_blank" aria-label="Join our Discord server">
         <img src="https://cdn-icons-png.flaticon.com/512/3670/3670157.png" alt="Discord Logo">
         Join Our Discord
     </a>
@@ -100,25 +101,32 @@
     </div>
 
     <script>
-        // Countdown Function
+        // Countdown Function (local timezone)
         function updateCountdown() {
             const now = new Date();
-            const christmas = new Date(now.getFullYear(), 11, 25); // December 25th
+            const christmas = new Date(now.getFullYear(), 11, 25); // Dec 25
 
             if (now > christmas) {
                 christmas.setFullYear(christmas.getFullYear() + 1);
             }
 
             const diff = christmas - now;
+            const countdownEl = document.getElementById('countdown');
+
+            // If it's Christmas Day
+            if (now.getMonth() === 11 && now.getDate() === 25) {
+                countdownEl.innerHTML = '🎄 Merry Christmas! 🎄';
+                return;
+            }
 
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
             const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-            document.getElementById('countdown').innerHTML = `
-                ${days} Days, ${hours} Hours, ${minutes} Minutes, ${seconds} Seconds
-            `;
+            const pad = (n) => n.toString().padStart(2, '0');
+
+            countdownEl.innerHTML = `${days} Days, ${pad(hours)} Hours, ${pad(minutes)} Minutes, ${pad(seconds)} Seconds`;
         }
 
         setInterval(updateCountdown, 1000);
@@ -127,7 +135,6 @@
         // Remove .html Extension from URL
         (function removeHtmlExtension() {
             const currentUrl = window.location.href;
-
             if (currentUrl.endsWith('.html')) {
                 const cleanUrl = currentUrl.replace(/\.html$/, '');
                 window.history.replaceState(null, '', cleanUrl);
@@ -136,4 +143,3 @@
     </script>
 </body>
 </html>
-
